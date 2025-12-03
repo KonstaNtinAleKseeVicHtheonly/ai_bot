@@ -1,0 +1,13 @@
+[2025-12-02 23:00:47,670] #INFO     main.py:46 - logger.logger_configuration - запуск основного цикла main
+[2025-12-02 23:00:48,005] #INFO     main.py:24 - logger.logger_configuration - Подключение к СУБД Postgrsql
+[2025-12-02 23:00:48,005] #INFO     models.py:78 - logger.logger_configuration - Запусе дивжка для СУБД postgre
+[2025-12-02 23:00:48,056] #INFO     main.py:27 - logger.logger_configuration - Подключение успешно
+[2025-12-02 23:00:48,056] #INFO     dispatcher.py:566 - aiogram.dispatcher - Start polling
+[2025-12-02 23:00:48,097] #INFO     dispatcher.py:363 - aiogram.dispatcher - Run polling for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
+[2025-12-02 23:01:24,276] #INFO     models_requests.py:154 - logger.logger_configuration - строка с именем openai/gpt-4o-mini имеется в БД
+[2025-12-02 23:01:24,453] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191352 is handled. Duration 2218 ms by bot id=8200656199
+[2025-12-02 23:01:26,566] #INFO     vse_gpt.py:60 - logger.logger_configuration - приступаю к отправке запроса перед тобой два стула, на одном пики точеные, на друго хуи дроченые, на какой сядешь?
+[2025-12-02 23:01:28,871] #INFO     _client.py:1740 - httpx - HTTP Request: POST https://api.vsegpt.ru/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-12-02 23:01:28,878] #INFO     vse_gpt.py:69 - logger.logger_configuration - Ответ успешно получен : ChatCompletion(id='gen-1764705689-C2n3qrbeZDSc0HkyxXXV', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='Выбор зависит от предпочтений, но я бы выбрал более комфортный вариант.', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, reasoning=None), native_finish_reason='stop')], created=1764705689, model='openai/gpt-4o-mini', object='chat.completion', service_tier=None, system_fingerprint='fp_eca0ce8298', usage=CompletionUsage(completion_tokens=71, prompt_tokens=170, total_tokens=241, completion_tokens_details=None, prompt_tokens_details=None))
+[2025-12-02 23:01:28,882] #WARNING  user_requests.py:44 - logger.logger_configuration - текущий баланс : 431.27,количество потраченных токенов 241, цена одного токена0.0003
+[2025-12-02 23:01:30,027] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191353 is handled. Duration 3780 ms by bot id=8200656199
