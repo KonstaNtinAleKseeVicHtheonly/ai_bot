@@ -229,11 +229,11 @@ async def generate_vision(path_to_get_image:str, user_request:str, ai_model_name
                         logger.error(f"вернулся пустой щапрос при vision генерации по запросу :{user_request}")
                         return False
                     logger.warning(f"получен запрос по генерации текста из иозображения : {response_json}")
-                    return {'response' : response_json['choises'][0]['message']['content'], 
-                            "token_usage" : response_json['usage']['total_token']}
+                    return {'response' : response_json['choices'][0]['message']['content'].strip(), 
+                            "token_usage" : response_json['usage']['total_tokens']}
                 else:
                     error_text = await response.text()
-                    logger.error(f"Ошибка API: {response.status} - {error_text}")
+                    logger.error(f"Ошибка API: {response.status} - {error_text}")   
                     return False          
     except aiohttp.ClientError as e:
         logger.error(f"Ошибка сети при запросе к API: {e}")

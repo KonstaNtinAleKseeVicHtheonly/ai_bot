@@ -138,9 +138,9 @@ async def ai_generate_text_by_image(message : Message, state : FSMContext):
         user_answer = await generate_vision(local_path_to_load_image, message.caption, model_data['ai_model'])# вернет ссылку на сгенерированое изображение
         os.remove(local_path_to_load_image) # удаление фотки от юзера после получения ответного запроса что бы память не засорять
         if user_answer:
-            await calculate_cost(message.from_user.id,model_data.get('ai_model'), model_data.get('ai_type'))
+            await calculate_cost(message.from_user.id,user_answer['token_usage'], model_data.get('ai_model'))
             await asyncio.sleep(1)
-            await message.answer_photo(photo=user_answer, caption=f"Сгенерировано по запросу : {message.caption}")
+            await message.answer(f"Ответ на ваш запрос:{user_answer['response']}")
             await state.set_state(ChatMode.vision)
             await message.answer("Введите следующий запрос либо выйдите из режима",reply_markup=cancel_keyboard)
         else:
@@ -188,7 +188,7 @@ async def ai_text_chatting(message : Message, state : FSMContext):
         await state.set_state(ChatMode.text)
         await message.answer("Введите следующий запрос либо выйдите из режима диалога, нажав кнопку отмены")
     
-@user_handler.message(F.text, StateFilter(ChatMode.waiting))
+@user_handler.message(StateFilter(ChatMode.waiting))
 async def wait_message(message : Message):
     await message.answer("Пожалуйста, подождите пока обрабтается ваш предыдущий запрос")
     

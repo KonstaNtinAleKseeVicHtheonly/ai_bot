@@ -50,5 +50,3 @@ if __name__ == '__main__':
         logger.warning("Работа бота была остановлена через скрипт и ctrl + C")
     except Exception as err:
         logger.critical(f"сработала ошибка {err} в теле основного цикла main")
-
-    # img-flux/flux-2
