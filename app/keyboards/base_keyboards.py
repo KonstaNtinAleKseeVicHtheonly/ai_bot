@@ -6,7 +6,8 @@ reply_keyboard = ReplyKeyboardMarkup(keyboard=[
 ], resize_keyboard=True, input_field_placeholder="Выберите режим")
 
 inline_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Режим отправки сообщений", callback_data='dialog_mod')]
+    [InlineKeyboardButton(text="Режим отправки сообщений", callback_data='dialog_mod'),InlineKeyboardButton(text="Режим генерации изображений", callback_data='generate_image_mod')],
+    [InlineKeyboardButton(text="Режим обработки изображения.Vision AI", callback_data='vision_mod')]
 ],resize_keyboard=True, input_field_placeholder="Выберите режим")
 
 cancel_keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Отмена',callback_data='cancel')]])

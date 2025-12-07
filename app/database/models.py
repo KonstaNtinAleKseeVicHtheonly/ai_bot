@@ -55,7 +55,7 @@ class AI_Model(Base):
     __tablename__ = 'ai_models'
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(20))
+    name: Mapped[str] = mapped_column(String(50))
     ai_type: Mapped[int] = mapped_column(ForeignKey('ai_types.id'))
     price: Mapped[str] = mapped_column(String(20), nullable=True, default='0.1')
     

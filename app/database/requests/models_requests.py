@@ -35,29 +35,26 @@ async def create_ai_type_hz(ai_type: str):
     if not isinstance(ai_type, str):
         logger.warning("❌ Нужно ввести тип AI в строковом варианте")
         return None  # ⬅️ возвращаем None, не False
-    
-    try:
-        async with async_session() as session:
-            # Проверяем существование
-            existing = await session.scalar(
-                select(AI_type).where(AI_type.name == ai_type)
-            )
+    async with async_session() as session:
+            try:
+                # Проверяем существование
+                existing = await session.scalar(
+                    select(AI_type).where(AI_type.name == ai_type)
+                )
+                if existing:
+                    logger.info(f"ℹ️ Тип AI '{ai_type}' уже существует")
+                    return False
+                # Создаем новый
+                logger.info(f"СОздание нового AI_type : {ai_type}")
+                new_ai_type = AI_type(name=ai_type)
+                session.add(new_ai_type)
+                await session.commit()
+                logger.info(f"✅ Тип AI '{ai_type}' создан, ID: {new_ai_type.id}")
+                return new_ai_type
+            except Exception as err:
+                logger.error(f"❌ Ошибка создания типа AI '{ai_type}': {err}")
+                return None  # ⬅️ возвращаем None при ошибке
             
-            if existing:
-                logger.info(f"ℹ️ Тип AI '{ai_type}' уже существует")
-                return False
-            # Создаем новый
-            new_ai_type = AI_type(name=ai_type)
-            await session.add(new_ai_type)
-            await session.commit()
-            
-            logger.info(f"✅ Тип AI '{ai_type}' создан, ID: {new_ai_type.id}")
-            return new_ai_type
-            
-    except Exception as err:
-        logger.error(f"❌ Ошибка создания типа AI '{ai_type}': {err}")
-        return None  # ⬅️ возвращаем None при ошибке
-    
     
 async def check_ai_type(current_session,ai_type:str)->bool|AI_type:
     '''если такой тип уже есть в БД - вернет данную строку из БД иначе False'''
@@ -72,7 +69,7 @@ async def check_ai_type(current_session,ai_type:str)->bool|AI_type:
 
     
     
-async def create_ai_model_2(ai_model_name: str, ai_type_name: str):
+async def create_ai_model_2(ai_model_name: str, ai_type_name: str, ai_model_price:str):
     """Создает новую AI модель"""
     try:
         async with async_session() as session:
@@ -81,7 +78,6 @@ async def create_ai_model_2(ai_model_name: str, ai_type_name: str):
             if not check_type:
                 logger.warning(f"⚠️ Тип AI '{ai_type_name}' не существует в базе")
                 return False
-            
             # 2. Проверяем, не существует ли уже такая модель
             existing_model = await session.scalar(
                 select(AI_Model).where(AI_Model.name == ai_model_name)
@@ -92,7 +88,8 @@ async def create_ai_model_2(ai_model_name: str, ai_type_name: str):
             # 3. Создаем новую модель (БЕЗ AWAIT!)
             new_ai_model = AI_Model(
                 name=ai_model_name,
-                ai_type=check_type.id
+                ai_type=check_type.id,
+                price = ai_model_price
             )
             session.add(new_ai_model)  # без await!
             # 4. Сохраняем в БД
@@ -100,8 +97,7 @@ async def create_ai_model_2(ai_model_name: str, ai_type_name: str):
             await session.refresh(new_ai_model)
             
             logger.info(f"✅ Новая AI модель '{ai_model_name}' успешно создана")
-            return new_ai_model
-            
+            return new_ai_model         
     except ValueError as err:
         # Ловим исключение из check_ai_type
         logger.error(f"❌ Ошибка проверки типа AI: {err}")
@@ -143,14 +139,18 @@ async def create_ai_model(ai_model_name:str, ai_type_name:str):
         # logger.info("Новая ai модель успешно создана")
         # return new_ai_model    
     
-async def get_ai_model_by_name(ai_name:str,ai_type_id:int): # вынести проверку на существование строки в БД в отдельный метод потом!!!
-    '''из БД возвращает объект класса AI_Models по ее названию'''
+async def get_ai_model_by_name(ai_name:str,ai_type:str): # вынести проверку на существование строки в БД в отдельный метод потом!!!
+    '''из БД возвращает объект класса AI_Models по ее названию и названию типа ai'''
     async with async_session() as session:
         try:
-            existing_ai = await session.scalar(select(AI_Model).where(AI_Model.name==ai_name, AI_Model.ai_type==ai_type_id))
+            check_type = await check_ai_type(session, ai_type)
+            if not check_type:
+                logger.warning(f"⚠️ Тип AI '{ai_type}' не существует в базе")
+                return False
+            existing_ai = await session.scalar(select(AI_Model).where(AI_Model.name==ai_name, AI_Model.ai_type==check_type.id))
             if not existing_ai:
                 logger.info(f"МОдели AI с именем {ai_name} нет в БД")
-                return f"МОдели AI с именем {ai_name} нет в БД"
+                return False
             logger.info(f"строка с именем {ai_name} имеется в БД")
             return existing_ai
         except Exception as err:

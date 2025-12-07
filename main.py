@@ -19,7 +19,7 @@ logger = setup_logging()
 
 
 
-async def on_startup(dispatcher):
+async def on_startup(dispatcher):#dsipathcer просто должен быть, его не удалять!!!
     '''метод создающий таблицы и устанавлаивающий связь в СУБД при запуске БОТА'''
     logger.info("Подключение к СУБД Postgrsql")
     try:
@@ -51,4 +51,4 @@ if __name__ == '__main__':
     except Exception as err:
         logger.critical(f"сработала ошибка {err} в теле основного цикла main")
 
-    
+    # img-flux/flux-2
