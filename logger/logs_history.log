@@ -1,30 +1,44 @@
-[2025-12-07 17:10:34,833] #INFO     dispatcher.py:594 - aiogram.dispatcher - Polling stopped
-[2025-12-07 17:10:34,834] #ERROR    dispatcher.py:219 - aiogram.dispatcher - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
-[2025-12-07 17:10:34,834] #WARNING  dispatcher.py:221 - aiogram.dispatcher - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8200656199)
-[2025-12-07 17:10:35,087] #INFO     dispatcher.py:395 - aiogram.dispatcher - Polling stopped for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
-[2025-12-07 17:10:35,089] #WARNING  main.py:50 - logger.logger_configuration - Работа бота была остановлена через скрипт и ctrl + C
-[2025-12-07 17:10:41,586] #INFO     main.py:46 - logger.logger_configuration - запуск основного цикла main
-[2025-12-07 17:10:41,946] #INFO     main.py:24 - logger.logger_configuration - Подключение к СУБД Postgrsql
-[2025-12-07 17:10:41,946] #INFO     models.py:78 - logger.logger_configuration - Запусе дивжка для СУБД postgre
-[2025-12-07 17:10:42,000] #INFO     main.py:27 - logger.logger_configuration - Подключение успешно
-[2025-12-07 17:10:42,000] #INFO     dispatcher.py:566 - aiogram.dispatcher - Start polling
-[2025-12-07 17:10:42,054] #INFO     dispatcher.py:363 - aiogram.dispatcher - Run polling for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
-[2025-12-07 17:10:57,269] #INFO     user_requests.py:28 - logger.logger_configuration - Юзер с tg_id 778151623 успешно найдет
-[2025-12-07 17:10:57,553] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191504 is handled. Duration 2343 ms by bot id=8200656199
-[2025-12-07 17:10:59,597] #INFO     models_requests.py:65 - logger.logger_configuration - ℹ️ Тип AI 'vision' уже существует
-[2025-12-07 17:10:59,601] #INFO     models_requests.py:154 - logger.logger_configuration - строка с именем vis-z-ai/glm-4.5v имеется в БД
-[2025-12-07 17:10:59,601] #WARNING  user_handlers.py:114 - logger.logger_configuration - Выбрана модель для генерации текста по фото vis-z-ai/glm-4.5v : 3
-[2025-12-07 17:10:59,678] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191505 is handled. Duration 93 ms by bot id=8200656199
-[2025-12-07 17:11:19,564] #WARNING  user_handlers.py:134 - logger.logger_configuration - вот путь до файла от юзера в хэндлереphotos/file_1.jpg
-[2025-12-07 17:11:19,710] #INFO     vse_gpt.py:178 - logger.logger_configuration - подготовка отправки запроса по фотке и промпту Что изображено на картинке и сколько там человек?, с AI моделью vis-z-ai/glm-4.5v
-[2025-12-07 17:11:19,721] #INFO     vse_gpt.py:219 - logger.logger_configuration - Отправка запроса на генерацию изображения
-[2025-12-07 17:11:35,671] #INFO     vse_gpt.py:224 - logger.logger_configuration - Запрос успешен, обработка ответа
-[2025-12-07 17:11:35,671] #WARNING  vse_gpt.py:231 - logger.logger_configuration - получен запрос по генерации текста из иозображения : {'id': 'gen-1765116680-BX9kYP4g7mLDqsTfDqUu', 'model': 'vis-z-ai/glm-4.5v', 'object': 'chat.completion', 'created': 1765116680, 'choices': [{'logprobs': None, 'finish_reason': 'stop', 'native_finish_reason': 'stop', 'index': 0, 'message': {'role': 'assistant', 'content': '\nНа картинке изображён мускулистый мужчина с голым торсом, надевший противогаз. Он стоит перед деревянным домом, держа руками какие-то конструкции (возможно, ворота или цепи). Внизу изображения присутствует русский текст «Иди своей дорогой сталкер».  \n\nКоличество человек на картинке — 1.\n \nОтвет: Изображён мускулистый мужчина в противогазе, человек 1.', 'refusal': None, 'reasoning': 'Пользователь спрашивает, что изображено на картинке и сколько там человек. Сначала нужно посмотреть на изображение. На картинке виден мускулистый мужчина с голым торсом, который носит противогаз. Он стоит перед домом, держит ворота или что-то подобное. Внизу есть текст на русском: "Иди своей дорогой сталкер". \n\nТеперь насчет количества людей. На изображении только один человек. Нужно убедиться, нет ли других фигур, но в кадре только этот мужчина. Поэтому ответ должен указать, что изображен мужчина в противогазе, и количество людей — один.', 'reasoning_details': [{'format': 'unknown', 'index': 0, 'type': 'reasoning.text', 'text': 'Пользователь спрашивает, что изображено на картинке и сколько там человек. Сначала нужно посмотреть на изображение. На картинке виден мускулистый мужчина с голым торсом, который носит противогаз. Он стоит перед домом, держит ворота или что-то подобное. Внизу есть текст на русском: "Иди своей дорогой сталкер". \n\nТеперь насчет количества людей. На изображении только один человек. Нужно убедиться, нет ли других фигур, но в кадре только этот мужчина. Поэтому ответ должен указать, что изображен мужчина в противогазе, и количество людей — один.'}]}}], 'usage': {'prompt_tokens': 394, 'completion_tokens': 240, 'total_tokens': 634}}
-[2025-12-07 17:11:35,683] #WARNING  user_requests.py:44 - logger.logger_configuration - Модель vis-z-ai/glm-4.5v, затраченные токены 634
-[2025-12-07 17:11:35,687] #WARNING  user_requests.py:47 - logger.logger_configuration - текущий баланс : 10000,количество потраченных токенов 634, цена одного токена0.3
-[2025-12-07 17:11:36,871] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191506 is handled. Duration 17515 ms by bot id=8200656199
-[2025-12-07 17:17:23,620] #INFO     dispatcher.py:594 - aiogram.dispatcher - Polling stopped
-[2025-12-07 17:17:23,621] #ERROR    dispatcher.py:219 - aiogram.dispatcher - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
-[2025-12-07 17:17:23,621] #WARNING  dispatcher.py:221 - aiogram.dispatcher - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8200656199)
-[2025-12-07 17:17:23,877] #INFO     dispatcher.py:395 - aiogram.dispatcher - Polling stopped for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
-[2025-12-07 17:17:23,879] #WARNING  main.py:50 - logger.logger_configuration - Работа бота была остановлена через скрипт и ctrl + C
+[2025-12-07 18:02:47,196] #INFO     models_requests.py:117 - logger.logger_configuration - строка с именем openai/gpt-4o-mini имеется в БД
+[2025-12-07 18:02:47,196] #CRITICAL user_handlers.py:72 - logger.logger_configuration - модель для текста openai/gpt-4o-mini : text
+[2025-12-07 18:02:47,301] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191519 is handled. Duration 125 ms by bot id=8200656199
+[2025-12-07 18:03:01,482] #INFO     vse_gpt.py:62 - logger.logger_configuration - приступаю к отправке запроса На пенек сел должен был косарь отдать
+[2025-12-07 18:03:03,822] #INFO     _client.py:1740 - httpx - HTTP Request: POST https://api.vsegpt.ru/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-12-07 18:03:03,828] #INFO     vse_gpt.py:71 - logger.logger_configuration - Ответ успешно получен : ChatCompletion(id='gen-1765119782-gYaWes96XV3oGcsMDGRc', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='Сказка о том, как косарь должен был отдать долг пеньку.', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, reasoning=None), native_finish_reason='stop')], created=1765119782, model='openai/gpt-4o-mini', object='chat.completion', service_tier=None, system_fingerprint='fp_11f3029f6b', usage=CompletionUsage(completion_tokens=55, prompt_tokens=122, total_tokens=177, completion_tokens_details=None, prompt_tokens_details=None))
+[2025-12-07 18:03:03,839] #WARNING  user_requests.py:54 - logger.logger_configuration - Модель openai/gpt-4o-mini, затраченные токены 177
+[2025-12-07 18:03:03,844] #WARNING  user_requests.py:57 - logger.logger_configuration - текущий баланс : 9736.690,количество потраченных токенов 177, цена одного токена0.0003
+[2025-12-07 18:03:05,044] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191520 is handled. Duration 3702 ms by bot id=8200656199
+[2025-12-07 18:04:11,077] #INFO     vse_gpt.py:62 - logger.logger_configuration - приступаю к отправке запроса /show_me
+[2025-12-07 18:04:12,382] #INFO     _client.py:1740 - httpx - HTTP Request: POST https://api.vsegpt.ru/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-12-07 18:04:12,383] #INFO     vse_gpt.py:71 - logger.logger_configuration - Ответ успешно получен : ChatCompletion(id='gen-1765119851-u3hPIc7ybP8UKFa51u02', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='Пожалуйста, уточните, что именно вы хотите увидеть.', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, reasoning=None), native_finish_reason='stop')], created=1765119851, model='openai/gpt-4o-mini', object='chat.completion', service_tier=None, system_fingerprint='fp_11f3029f6b', usage=CompletionUsage(completion_tokens=51, prompt_tokens=94, total_tokens=145, completion_tokens_details=None, prompt_tokens_details=None))
+[2025-12-07 18:04:12,391] #WARNING  user_requests.py:54 - logger.logger_configuration - Модель openai/gpt-4o-mini, затраченные токены 145
+[2025-12-07 18:04:12,393] #WARNING  user_requests.py:57 - logger.logger_configuration - текущий баланс : 9736.584,количество потраченных токенов 145, цена одного токена0.0003
+[2025-12-07 18:04:13,768] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191521 is handled. Duration 2936 ms by bot id=8200656199
+[2025-12-07 18:04:19,466] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191522 is handled. Duration 266 ms by bot id=8200656199
+[2025-12-07 18:04:23,793] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191523 is handled. Duration 125 ms by bot id=8200656199
+[2025-12-07 18:05:04,753] #INFO     dispatcher.py:594 - aiogram.dispatcher - Polling stopped
+[2025-12-07 18:05:04,754] #ERROR    dispatcher.py:219 - aiogram.dispatcher - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+[2025-12-07 18:05:04,755] #WARNING  dispatcher.py:221 - aiogram.dispatcher - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8200656199)
+[2025-12-07 18:05:05,011] #INFO     dispatcher.py:395 - aiogram.dispatcher - Polling stopped for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
+[2025-12-07 18:05:05,012] #WARNING  main.py:50 - logger.logger_configuration - Работа бота была остановлена через скрипт и ctrl + C
+[2025-12-07 18:07:12,000] #INFO     main.py:46 - logger.logger_configuration - запуск основного цикла main
+[2025-12-07 18:07:12,356] #INFO     main.py:24 - logger.logger_configuration - Подключение к СУБД Postgrsql
+[2025-12-07 18:07:12,356] #INFO     models.py:69 - logger.logger_configuration - Запусе дивжка для СУБД postgre
+[2025-12-07 18:07:12,406] #INFO     main.py:27 - logger.logger_configuration - Подключение успешно
+[2025-12-07 18:07:12,406] #INFO     dispatcher.py:566 - aiogram.dispatcher - Start polling
+[2025-12-07 18:07:12,452] #INFO     dispatcher.py:363 - aiogram.dispatcher - Run polling for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
+[2025-12-07 18:07:23,994] #INFO     user_requests.py:31 - logger.logger_configuration - Юзер с tg_id 778151623 успешно найдет
+[2025-12-07 18:07:24,482] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191524 is handled. Duration 2531 ms by bot id=8200656199
+[2025-12-07 18:07:29,834] #INFO     models_requests.py:117 - logger.logger_configuration - строка с именем openai/gpt-4o-mini имеется в БД
+[2025-12-07 18:07:29,834] #CRITICAL user_handlers.py:72 - logger.logger_configuration - модель для текста openai/gpt-4o-mini : text
+[2025-12-07 18:07:29,961] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191525 is handled. Duration 141 ms by bot id=8200656199
+[2025-12-07 18:07:57,375] #INFO     vse_gpt.py:62 - logger.logger_configuration - приступаю к отправке запроса Надел мужик шапку, а она ему как раз
+[2025-12-07 18:07:58,858] #INFO     _client.py:1740 - httpx - HTTP Request: POST https://api.vsegpt.ru/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-12-07 18:07:58,863] #INFO     vse_gpt.py:71 - logger.logger_configuration - Ответ успешно получен : ChatCompletion(id='gen-1765120078-WHDHGBoXCjxdZjAnjFKG', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='Как раз в пору!', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, reasoning=None), native_finish_reason='stop')], created=1765120078, model='openai/gpt-4o-mini', object='chat.completion', service_tier=None, system_fingerprint='fp_11f3029f6b', usage=CompletionUsage(completion_tokens=15, prompt_tokens=121, total_tokens=136, completion_tokens_details=None, prompt_tokens_details=None))
+[2025-12-07 18:07:58,876] #WARNING  user_requests.py:54 - logger.logger_configuration - Модель openai/gpt-4o-mini, затраченные токены 136
+[2025-12-07 18:07:58,880] #WARNING  user_requests.py:57 - logger.logger_configuration - текущий баланс : 9736.497,количество потраченных токенов 136, цена одного токена0.0003
+[2025-12-07 18:08:00,052] #INFO     dispatcher.py:172 - aiogram.event - Update id=230191526 is handled. Duration 2952 ms by bot id=8200656199
+[2025-12-07 18:52:08,038] #INFO     dispatcher.py:594 - aiogram.dispatcher - Polling stopped
+[2025-12-07 18:52:08,041] #ERROR    dispatcher.py:219 - aiogram.dispatcher - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+[2025-12-07 18:52:08,042] #WARNING  dispatcher.py:221 - aiogram.dispatcher - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8200656199)
+[2025-12-07 18:52:08,309] #INFO     dispatcher.py:395 - aiogram.dispatcher - Polling stopped for bot @ai_api_true_bot id=8200656199 - 'AI_BOT'
+[2025-12-07 18:52:08,310] #WARNING  main.py:50 - logger.logger_configuration - Работа бота была остановлена через скрипт и ctrl + C

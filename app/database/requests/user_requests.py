@@ -4,6 +4,8 @@ from logger.logger_configuration import setup_logging
 from decimal import Decimal, ROUND_HALF_UP
 from app.utils.system_decorators import set_session_connection # декоратор подключения к сессии для взаимодейтсвия с БД
 
+import os
+
 logger = setup_logging()
 
 
@@ -48,12 +50,12 @@ async def get_tg_user(session,user_id:int)->User|bool:
 async def calculate_cost(session,user_tg_id:int, tokens_spent:int,  model_name:str):
     '''высчитывает сумма потраченную за 1 запрос'''
     try:
-        logger.error(user_tg_id, tokens_spent, model_name)
+        logger.error(f"{user_tg_id}, {tokens_spent}, {model_name}")
         logger.warning(f"Модель {model_name}, затраченные токены {tokens_spent}")
         user = await session.scalar(select(User).where(User.tg_id==user_tg_id))
         ai_model = await session.scalar(select(AI_Model).where(AI_Model.name==model_name))
         logger.warning(f"текущий баланс : {user.balance},количество потраченных токенов {tokens_spent}, цена одного токена{ai_model.price}")
-        request_cost_raw= (Decimal(ai_model.price) * Decimal(tokens_spent))* Decimal('1.3')# сумма запроса на основе количества потраченных токенов и цены одного токена данной модели 1.5 это наша наценка
+        request_cost_raw= (Decimal(ai_model.price) * Decimal(tokens_spent))* Decimal(os.getenv('INTEREST_RATE'))# сумма запроса на основе количества потраченных токенов и цены одного токена данной модели 1.5 это наша наценка
         request_cost_final = request_cost_raw.quantize(Decimal('0.001'),rounding=ROUND_HALF_UP)
         new_balance = Decimal(user.balance) - Decimal(request_cost_final)# сумма на балансе юзера после запроса
         await session.execute(update(User).where(User.id==user.id).values(balance=str(new_balance)))
@@ -63,11 +65,11 @@ async def calculate_cost(session,user_tg_id:int, tokens_spent:int,  model_name:s
         raise ValueError
    
 @set_session_connection      
-async def calculate_image_cost(session,user_tg_id:int, model_name:str, model_type_id:int):
+async def calculate_image_cost(session,user_tg_id:int, model_name:str, model_type:str):
     '''высчитывает сумма потраченную за 1 фотографи запрос(без токенов т.к цена в модели указана за генерацию одного изображения)'''
     try:
         user = await session.scalar(select(User).where(User.tg_id==user_tg_id))
-        ai_model = await session.scalar(select(AI_Model).where(AI_Model.name==model_name, AI_Model.ai_type==model_type_id))
+        ai_model = await session.scalar(select(AI_Model).where(AI_Model.name==model_name, AI_Model.aimodel_type==model_type))
         request_cost_raw= Decimal(ai_model.price) * Decimal('2')# сумма запроса на основе количества потраченных токенов и цены одного токена данной модели 1.5 это наша наценка
         request_cost_final = request_cost_raw.quantize(Decimal('0.01'),rounding=ROUND_HALF_UP)
         logger.info(f"запрос от юзера {user.user_name} : {user.tg_id}, на сумму {ai_model.price}")
@@ -77,7 +79,7 @@ async def calculate_image_cost(session,user_tg_id:int, model_name:str, model_typ
         await session.commit()
     except Exception as err:
         logger.error(f"Ошибка при расчете стоимости генерации изображения: {err}")
-        raise ValueError
+        raise ValueError(f"Произошла ошибка: {err}")
         
 
 

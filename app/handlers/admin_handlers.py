@@ -8,16 +8,15 @@ from app.FSM.states import NewsLetter
 from aiogram.filters import StateFilter
 # системыне утилиты
 import asyncio
-from logger.logger_configuration import setup_logging
-#API
-from app.open_ai.deepseek_api import check_balance, test_api_key, base_request
 import os
 from dotenv import load_dotenv
 #фильтры
 from app.filters.admin_filters import AdminFilter
 # DB
 from app.database.requests.admin_requests import delete_tg_user, get_all_models, get_all_users
-from app.database.requests.models_requests import create_ai_type_hz, create_ai_model_2
+from app.database.requests.models_requests import  create_ai_model_2
+#логгер
+from logger.logger_configuration import setup_logging
 
 load_dotenv()
 
@@ -47,20 +46,6 @@ async def delete_user_by_id(message: Message, command:CommandObject):
         await message.answer(f"общая ошибка произошла при удалении :{err}")
         return 
 
-@admin_handler.message(Command('create_ai_type'))
-async def create_new_ai_type(message: Message, command:CommandObject):
-    if not command.args:
-        await message.answer("Пожалуйста укажите текстовый тип AI который нужно создать")
-        return
-    try:
-        new_ai_type = command.args.strip()
-        result = await create_ai_type_hz(new_ai_type)
-        if result:
-            await message.answer(f"Новый тип AI : {new_ai_type} успешно создан")
-        else:
-            await message.answer(f"Скорее данный тип AI {new_ai_type} уже существует, либо указано неверный тип")
-    except Exception as err:
-        await message.answer(f"Общая ошибка при создании типа AI : {err}")
         
 
 @admin_handler.message(Command('create_ai_model'))
@@ -89,7 +74,7 @@ async def show_all_ai_model(message: Message):
         if result:
             general_text = ''
             for model in result:
-                general_text += f"Название: {model.name}, цена: {model.price}\n"
+                general_text += f"Название: {model.name}, тип:{model.aimodel_type}, цена: {model.price}\n"
             await message.answer(f"Список всех акутальных моделей:\n{general_text}")
         else:
             await message.answer("Скорее всего какая то шляпа произошла")

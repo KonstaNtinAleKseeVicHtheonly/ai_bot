@@ -43,12 +43,6 @@ class User(Base):
             raise ValueError("Имя больше нуля должно быть")
         return user_name
     
-class AI_type(Base):
-    '''Тип модели для опред запросов(текстовый, аудио, видео, фото)'''
-    __tablename__ = "ai_types"
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(25), unique=True)
     
 class AI_Model(Base):
     '''Модель ai, связанная с AI_type'''
@@ -56,7 +50,7 @@ class AI_Model(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
-    ai_type: Mapped[int] = mapped_column(ForeignKey('ai_types.id'))
+    aimodel_type =  mapped_column(String(50), nullable=True)
     price: Mapped[str] = mapped_column(String(20), nullable=True, default='0.1')
     
 class Order(Base):
@@ -68,9 +62,6 @@ class Order(Base):
     amount: Mapped[str] = mapped_column(String(15), default='0')
     created_at: Mapped[datetime] 
     order: Mapped[str] = mapped_column(String(100)) # уникальный номе заказа для ориентира
-    
-    
-    
     
     
      

@@ -21,35 +21,13 @@ client = AsyncOpenAI(
             api_key=os.getenv("VSE_GPT_API_KEY"), # ваш ключ в VseGPT после регистрации
             base_url="https://api.vsegpt.ru/v1",# ссылка на api сайта
             )
+
+chat_histores = defaultdict(list) # для хранения истории диалога
 #proxy_transport = AsyncProxyTransport.from_url(
 #     os.getenv('PROXY_IP')
 # )# доп настройка под socks5 иначе при прокси на https использовать  http_client=httpx.AsyncClient(proxy='https://P7FQ8t:v9bpPd@168.81.236.73:8000',transport=httpx.HTTPTransport(local_address="0.0.0.0")),
 
     
-def generate_text_request(user_request:str)->str:
-    '''передает указанно сообщение на отправку по api в текстовое AI, после - возвращает ответ на запрос'''
-    try:
-    
-        messages = []
-        #messages.append({"role": "system", "content": system_text})
-        messages.append({"role": "user", "content": user_request})
-
-        logger.info(f"приступаю к отправке запроса {user_request}")
-        response_big = client.chat.completions.create(
-            model='openai/gpt-4o-mini', # id модели из списка моделей - можно использовать OpenAI, Anthropic и пр. меняя только этот параметр
-            messages=messages,
-            temperature=0.7,
-            n=1,
-            max_tokens=3000, # максимальное число ВЫХОДНЫХ токенов. Для большинства моделей не должно превышать 4096
-            extra_headers={ "X-Title": "My App" }, # опционально - передача информация об источнике API-вызова
-        )
-        logger.info("Ответ успешно получен")
-        #print("Response BIG:",response_big)
-        response = response_big.choices[0].message.content
-        return response
-    except Exception as err:
-        logger.error(f'Возника ошбка при отпрвке запроса на AI : {err}')
-        return f"Ошибка в запросе : {err}"
     
 
 async def generate_text_request_async(user_request:str)->dict[str:str]:
@@ -144,30 +122,10 @@ async def generate_image_request_async(user_request:str, ai_model_name:str)->str
         logger.error(f"Неожиданная ошибка при генерации изображения: {e}")
         raise Exception(f"Ошибка генерации: {e}")
 
-# async def generate_text_by_image(user_image,user_prompt:str, ai_model):
-#     logger.info("приступаю к генерации текста по изображению от юзера")
-#     response = await client.chat.completions.create(
-#         model=ai_model,
-#         messages=[
-#             {
-#                 "role": "user",
-#                 "content": [
-#                     {"type": "text", "text": user_prompt},
-#                     {
-#                         "type": "image_url",
-#                         "image_url": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA18Lnc8.img?w=1920&h=1080&q=60&m=2&f=jpg",
-#                     },
-#                 ],
-#             }
-#         ],
-#         max_tokens=400)
-#     if response:
-    
-#     response = response.choices[0]
-#     logger.info(f"Ответ успешно получен: {response}")
-#     return response
 async def encode_image(image_path):
-    '''асинхронно'''
+    '''асинхронно открываем файл в двоичном виде сохраненный от юзера в vision режиме
+    и кодируем его в base64_bytes'''
+    
     async with aiofiles.open(image_path, 'rb') as image_file:
         image_bytes = await image_file.read()  # читаем bytes
         base64_bytes = base64.b64encode(image_bytes)  # кодируем в base64 bytes
@@ -211,9 +169,7 @@ async def generate_vision(path_to_get_image:str, user_request:str, ai_model_name
         ],
         "max_tokens": 400}
     
-        url = "https://api.vsegpt.ru/v1/images/generations"
         url_2 = "https://api.vsegpt.ru/v1/chat/completions"
-        url_3 = "https://api.vsegpt.ru/v1/completions"
 
         async with aiohttp.ClientSession(headers=headers) as session:
             logger.info('Отправка запроса на генерацию изображения')
@@ -241,39 +197,30 @@ async def generate_vision(path_to_get_image:str, user_request:str, ai_model_name
     except Exception as e:
         logger.error(f"Неожиданная ошибка при генерации изображения: {e}")
         raise Exception(f"Ошибка генерации: {e}")
-                    # рудимент к generate_vision
-                    # # Validate response structure
-                    # if not response_json.get("data") or len(response_json["data"]) == 0:
-                    #     raise ValueError("Некорректный ответ от API: отсутствует data")
-                    
-                    # b64_data = response_json["data"][0].get("b64_json")
-                    # if not b64_data:
-                    #     raise ValueError("Некорректный ответ от API: отсутствует b64_json")
-                    
-                    # # Generate unique filename
-                    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    # unique_id = str(uuid.uuid4())[:8]
-                    # filename = f"generated_{timestamp}_{unique_id}.png"
-                    # filepath = os.path.join(
-                    #     rf"D:\vsc\projects\TG_BOTS\AI_API_BOT\app\downloads\pictures\user_{user_tg_id}",
-                    #     filename
-                    # )
-                    # # Ensure directory exists
-                    # os.makedirs(os.path.dirname(filepath), exist_ok=True)
-                    # # Decode and save image
-                    # logger.info(f"Сохранение изображения: {filename}")
-                    # try:
-                    #     image_data = base64.b64decode(b64_data)
-                    #     with open(filepath, "wb") as img_file:
-                    #         img_file.write(image_data)
-                    # except base64.binascii.Error as e:
-                    #     raise ValueError(f"Ошибка декодирования base64: {e}")
-                    # logger.warning(f"вот финальный запрос : {response_json}")
-                    # # Return both response data and filepath
-                    # return {
-                    #     "filepath": filepath,
-                    #     "filename": filename
-                    # }
+
+
+
+
+
+async def send_ai_request_with_history(chat_id:int, user_request:str):
+    '''метод для получения сообщения от юзера при текстовом режиме и сохранения их'''
+    messages = chat_histores.get(chat_id, [])
+    if not messages:
+        messages.append({"role": "system", "content": "Отвечай лаконично и емко"})
+    
+    # Добавляем новый запрос пользователя
+    messages.append({"role": "user", "content": user_request})
+    
+    # Ограничиваем историю (например, последние 10 сообщений + system)
+    if len(messages) > 11:  # 1 system + 10 пар (user+assistant)
+        # Оставляем system сообщение и последние 10 сообщений
+        messages = [messages[0]] + messages[-10:]
+    logger.info(f"Отправляю запрос с историей из {len(messages)} сообщений")
+    
+    response_bit =    
+       
+
+
 
 # метод ессли нужно сохранить сгенерированную фотку на диск:
 # async def generate_image_request_async(user_tg_id:int,user_request:str, ai_model_name:str)->str:
