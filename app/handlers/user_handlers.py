@@ -13,7 +13,7 @@ import asyncio
 import uuid
 import os
 #vsegpt
-from app.open_ai.vse_gpt import generate_text_request_async, generate_image_request_async, generate_vision
+from app.open_ai.vse_gpt import generate_text_request_async, generate_image_request_async, generate_vision, send_ai_request_with_history
 #клавиаутра
 from app.keyboards.base_keyboards import inline_keyboard, cancel_keyboard
 # FSM
@@ -67,6 +67,7 @@ async def set_dialog_mod(callback : CallbackQuery, state:FSMContext):
     elif Decimal(current_user.balance) <= 0:
         await callback.message.answer("Недостаточно срдетсв на балансе, пожалуйста пополните его что бы начать разговор с чатом")
     else:
+        
         await state.set_state(ChatMode.text)
         text_ai_model_info = await get_ai_model_by_name('openai/gpt-4o-mini', 'text')
         logger.critical(f"модель для текста {text_ai_model_info.name} : {text_ai_model_info.aimodel_type}")
@@ -86,7 +87,11 @@ async def ai_text_chatting(message : Message, state : FSMContext):
         await message.answer("Ваш запрос принят, пожалуйста ожидайте")
         await state.set_state(ChatMode.waiting)
         await message.bot.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)# какое действие происходит в чате сейча
-        user_answer = await generate_text_request_async(message.text) # вернет сам ответ и затраченные токены
+        # user_answer = await generate_text_request_async(model_data.get('ai_model'),message.text) # вернет сам ответ и затраченные токены, рабоатет без учета контекста
+        user_answer = await send_ai_request_with_history(message.chat.id, model_data.get('ai_model'), message.text)# работает с учетом контекста
+        if not user_answer:# значит вернулся текст ошибки
+            await message.answer("К сожалению возникла ошибка при вашем запросе, повторите попытку")
+            return
         await calculate_cost(message.from_user.id, user_answer['token_usage'],  model_data.get('ai_model'))
         await asyncio.sleep(1)
         await message.answer(f"Получен ответ на ваш запрос:\n{user_answer['response']}")

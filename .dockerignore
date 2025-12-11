@@ -1,0 +1,7 @@
+# venv
+/my_venv
+# Git
+.git/
+.gitignore
+.gitattributes
+.gitmodules

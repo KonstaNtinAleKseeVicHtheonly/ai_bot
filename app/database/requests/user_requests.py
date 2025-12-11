@@ -50,7 +50,6 @@ async def get_tg_user(session,user_id:int)->User|bool:
 async def calculate_cost(session,user_tg_id:int, tokens_spent:int,  model_name:str):
     '''высчитывает сумма потраченную за 1 запрос'''
     try:
-        logger.error(f"{user_tg_id}, {tokens_spent}, {model_name}")
         logger.warning(f"Модель {model_name}, затраченные токены {tokens_spent}")
         user = await session.scalar(select(User).where(User.tg_id==user_tg_id))
         ai_model = await session.scalar(select(AI_Model).where(AI_Model.name==model_name))

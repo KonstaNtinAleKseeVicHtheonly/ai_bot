@@ -5,7 +5,6 @@ from logger.logger_configuration import setup_logging
 import os
 import httpx
 from httpx_socks import AsyncProxyTransport
-from app.database.models import async_session
 import base64
 from datetime import datetime
 import uuid
@@ -13,6 +12,10 @@ import aiohttp
 import aiofiles
 from aiogram.types import BufferedInputFile
 
+
+from app.utils.context_dialog import ChatHistory_2
+
+chat_history = ChatHistory_2() # класс для контекстного текствого диалога с AI
 
 load_dotenv()
 logger = setup_logging()
@@ -22,7 +25,6 @@ client = AsyncOpenAI(
             base_url="https://api.vsegpt.ru/v1",# ссылка на api сайта
             )
 
-chat_histores = defaultdict(list) # для хранения истории диалога
 #proxy_transport = AsyncProxyTransport.from_url(
 #     os.getenv('PROXY_IP')
 # )# доп настройка под socks5 иначе при прокси на https использовать  http_client=httpx.AsyncClient(proxy='https://P7FQ8t:v9bpPd@168.81.236.73:8000',transport=httpx.HTTPTransport(local_address="0.0.0.0")),
@@ -30,7 +32,7 @@ chat_histores = defaultdict(list) # для хранения истории ди�
     
     
 
-async def generate_text_request_async(user_request:str)->dict[str:str]:
+async def generate_text_request_async(ai_model_name:str,user_request:str)->dict[str:str]:
     '''передает указанно сообщение на отправку по api в текстовое AI, после - возвращает ответ на запрос'''
     try:
         messages = []
@@ -39,7 +41,7 @@ async def generate_text_request_async(user_request:str)->dict[str:str]:
 
         logger.info(f"приступаю к отправке запроса {user_request}")
         response_big = await client.chat.completions.create(
-            model='openai/gpt-4o-mini', # id модели из списка моделей - можно использовать OpenAI, Anthropic и пр. меняя только этот параметр
+            model=ai_model_name, # id модели из списка моделей - можно использовать OpenAI, Anthropic и пр. меняя только этот параметр
             messages=messages,
             temperature=1,
             n=1,
@@ -55,7 +57,7 @@ async def generate_text_request_async(user_request:str)->dict[str:str]:
             logger.error(f'Возника ошбка при отпрвке запроса на AI связанная с ответом: {err} {response}')
             return f"Ошибка в запросе : {err} {response}"
         logger.error(f'Возника ошбка при отпрвке запроса на AI : {err}')
-        return f"Ошибка в запросе : {err} {response}"
+        return False
     
     
 async def generate_image_request_async(user_request:str, ai_model_name:str)->str:
@@ -201,24 +203,42 @@ async def generate_vision(path_to_get_image:str, user_request:str, ai_model_name
 
 
 
-
-async def send_ai_request_with_history(chat_id:int, user_request:str):
-    '''метод для получения сообщения от юзера при текстовом режиме и сохранения их'''
-    messages = chat_histores.get(chat_id, [])
-    if not messages:
-        messages.append({"role": "system", "content": "Отвечай лаконично и емко"})
-    
-    # Добавляем новый запрос пользователя
-    messages.append({"role": "user", "content": user_request})
-    
-    # Ограничиваем историю (например, последние 10 сообщений + system)
-    if len(messages) > 11:  # 1 system + 10 пар (user+assistant)
-        # Оставляем system сообщение и последние 10 сообщений
-        messages = [messages[0]] + messages[-10:]
-    logger.info(f"Отправляю запрос с историей из {len(messages)} сообщений")
-    
-    response_bit =    
-       
+async def send_ai_request_with_history(chat_id:int, ai_model:str,user_request:str)->dict[str]:
+    '''метод для получения сообщения от юзера при текстовом режиме и сохранения их
+    принимается на вход id чата(именно чата а не юзера!!!), имя модели для API запроса,
+    само сообщение от бзера
+    '''
+    try:
+        
+        await chat_history.add_message(chat_id, "user", user_request)# добаляем сообщени от юзера в контекст
+            
+        # 2. Получаем полную историю (уже с system prompt если нужно)
+        messages = await chat_history.get_messages(chat_id)
+        # В messages уже будет system prompt + все предыдущие сообщения + текущий user запрос
+        
+        # 3. Отправляем запрос к AI
+        response_big = await client.chat.completions.create(
+            model=ai_model,
+            messages=messages,  
+            temperature=1,
+            n=1,
+            max_tokens=3000,
+            extra_headers={"X-Title": "My App"}
+        )
+        
+        # 4. Извлекаем текст ответа
+        response_text = response_big.choices[0].message.content
+        
+        # 5. Добавляем ответ AI в историю (ОДИН раз!)
+        await chat_history.add_message(chat_id, "assistant", response_text)
+        
+        return {
+            'response': response_text,
+            'token_usage': response_big.usage.total_tokens
+        }
+    except Exception as err:
+        logger.error(f"Ошибка произошла при отправке текстовго запроса {user_request} : {err}")
+        return False
 
 
 
